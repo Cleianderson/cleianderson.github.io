@@ -4,10 +4,12 @@ import smalltalk from "smalltalk";
 import HomeRoutes from "./routes/Home";
 import "./global.css";
 
-import ContextApp from "./contexts/ContextApp";
+import { useDispatch } from "react-redux";
 
 function App() {
-  const [pass, setPass] = useState<string>("");
+  const dispatch = useDispatch()
+
+  const setUserPassword = (pass: string) => dispatch({ type: 'SET_USER_PASSWORD', payload: { userPassword: pass } })
 
   useEffect(() => {
     const showInputPassword = async () => {
@@ -16,16 +18,14 @@ function App() {
         "Insira a senha para usar a aplicação",
         ""
       );
-      setPass(inputUser);
+      setUserPassword(inputUser);
     };
     showInputPassword();
   }, []);
 
   return (
     <div className="App">
-      <ContextApp.Provider value={{ pass }}>
-        <HomeRoutes />
-      </ContextApp.Provider>
+      <HomeRoutes />
     </div>
   );
 }
