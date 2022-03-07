@@ -1,11 +1,13 @@
-import React, { useState, useRef, useContext, FormEvent } from "react";
-import Smalltalk from "smalltalk";
+import React, { useState, useRef, FormEvent } from "react";
+import { useSelector } from "react-redux";
 
 import {
   Container,
   Content,
   Close,
+  Header,
   Button,
+  ButtonFile,
   ContainerButtons,
   Input,
   ErrorText,
@@ -14,14 +16,16 @@ import {
 
 import Table from "../../../../components/Table";
 import api from "../../../../service/api";
-import ContextApp from "../../../../contexts/ContextApp";
+import { useAlert } from "react-alert";
 
 const Insert: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   const [data, setData] = useState<WeekDay[]>([]);
   const [numWeek, setNumWeek] = useState<string>();
   const [error, setError] = useState<string>();
+  const [isLaunch, setIsLaunch] = useState(true)
 
-  const { pass } = useContext(ContextApp);
+  const userPassword = useSelector<MainRootState>(state => state.mainState.userPassword);
+  const alert = useAlert()
   const launchInput = useRef<HTMLInputElement>(null);
   const dinnerInput = useRef<HTMLInputElement>(null);
 
@@ -50,53 +54,64 @@ const Insert: React.FC<{ onClose: () => void }> = ({ onClose }) => {
     const res = await api.post(
       `/schedule?number_week=${numWeek}`,
       {
-        pass,
+        pass: userPassword,
         week: data,
       },
       { validateStatus: () => true }
     );
 
     if (res.status === 200) {
-      Smalltalk.alert("Succeso", `Semana ${numWeek} criada!`).then(() => {
-        setNumWeek("");
-        setData([]);
-        setError("");
-      });
+      alert.success(`Semana ${numWeek} criada com sucesso!`)
+      setNumWeek("");
+      setData([]);
+      setError("");
     } else {
-      Smalltalk.alert("Erro", res.data.error);
+      alert.error(res.data.error);
     }
   };
 
   return (
     <Container>
       <ContainerButtons onSubmit={handleMount}>
-        <Label>
-          Almoço
-          <Button type="file" ref={launchInput} accept=".xls, .xlsx" />
-        </Label>
-        <Label>
-          Jantar
-          <Button ref={dinnerInput} type="file" accept=".xls, .xlsx" />
-        </Label>
-        <Button type="submit" value="Carregar arquivos" />
-        <ErrorText>{error}</ErrorText>
+        {data.length === 0 ?
+          <>
+            <Label>
+              Almoço
+              <ButtonFile type="file" ref={launchInput} accept=".xls, .xlsx" />
+            </Label>
+            <Label>
+              Jantar
+              <ButtonFile ref={dinnerInput} type="file" accept=".xls, .xlsx" />
+            </Label>
+            <ButtonFile type="submit" value="Carregar arquivos" />
+            <ErrorText>{error}</ErrorText>
+          </> :
+          <>
+            <ButtonFile type="button" onClick={handleSubmit} value="Enviar" />
+            <Input
+              type="number"
+              placeholder="Núm. da Semana (ISO)"
+              value={numWeek}
+              onChange={(e) => setNumWeek(e.target.value)}
+            />
+          </>
+        }
       </ContainerButtons>
-      {data && (
-        <Content>
-          <Table label="Almoço" type="almoco" week={data} />
-          <Table label="Jantar" type="jantar" week={data} />
-        </Content>
-      )}
-      <ContainerButtons style={{ flexDirection: "row-reverse" }}>
-        <Button type="button" onClick={handleSubmit} value="Enviar" />
-        <Input
-          type="number"
-          placeholder="Núm. da Semana (ISO)"
-          value={numWeek}
-          onChange={(e) => setNumWeek(e.target.value)}
+      {data.length > 0 && <Content>
+        <Header>
+          <Button selected={isLaunch} onClick={() => setIsLaunch(true)}>
+            Almoço
+          </Button>
+          <Button selected={!isLaunch} onClick={() => setIsLaunch(false)}>
+            Jantar
+          </Button>
+        </Header>
+        <Table
+          type={isLaunch ? "almoco" : 'jantar'}
+          week={data} label={isLaunch ? "Almoço" : 'Jantar'}
         />
-      </ContainerButtons>
-      <Close onClick={onClose}>fechar</Close>
+      </Content>}
+      <Close onClick={onClose}>X fechar</Close>
     </Container>
   );
 };

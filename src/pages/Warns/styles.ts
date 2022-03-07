@@ -1,15 +1,11 @@
 import styled from "styled-components";
+import StackGrid from "react-stack-grid";
 
 export const Container = styled.div`
-  height: calc(100vh);
+  height: 100vh;
 `;
-export const Content = styled.div`
-  display: flex;
-  flex: 1;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  overflow: auto;
+export const Content = styled(StackGrid)`
+  max-width: calc(100% - 1px);
   height: calc(100vh - 50px);
 `;
 export const WarnContainer = styled.div`
@@ -68,9 +64,18 @@ export const Modal = styled.div<{visible:boolean}>`
   height: 100vh;
   background: #ccccccaa;
   top: 0;
+  max-width: calc(100vw - 200px);
 `;
 
 export const EmptyContainer = styled.div`
+  display: flex;
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
 `
 
-export const EmptyText = styled.span``
+export const EmptyText = styled.span`
+  align-self: center;
+`

@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Table as CTable, Thead, Tr, Th, Tbody, Td, Title, Container } from "./styles";
+import { Table as CTable, Thead, Tr, Th, Tbody, Td, Container } from "./styles";
 
 type props = { week: WeekDay[]; type: string; label?: string };
 
@@ -21,7 +21,6 @@ const KEYS_VALUES: { [key: string]: string } = {
 const Table: React.FC<props> = ({ week, type, label }) => {
   return (
     <Container>
-      {label && <Title>{label}</Title>}
       <CTable>
         <Thead>
           <Tr>

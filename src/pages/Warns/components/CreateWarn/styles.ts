@@ -3,6 +3,7 @@ import styled from "styled-components";
 export const Container = styled.div`
   box-shadow: 5px 5px 10px 0px #444;
   border-radius: 10px;
+  z-index: 10;
 `;
 
 export const Content = styled.div`

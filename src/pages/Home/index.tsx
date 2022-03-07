@@ -1,42 +1,46 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useEffect, useCallback } from "react";
+import { useSelector } from "react-redux";
 
 // import { Container } from './styles';
 
 import Sidebar from "./components/Sidebar";
 import Header from "../../components/Header";
+import Warns from "../../pages/Warns";
+import Suggestions from "../../pages/Suggestions";
+import Answers from "../../pages/Answers";
+import Weeks from "../../pages/Weeks";
 
 import api from "../../service/api";
 import {
   WeekContainer,
   Container,
   Content,
-  EmptyContainer,
-  EmptyText,
 } from "./styles";
-import Week from "./components/Week";
 
 function Home() {
-  const [week, setWeek] = useState<WeekDay[]>();
+  const selectedPage = useSelector<MainRootState, string>(state => state.mainState.selectedPage)
+
+  const pages: { [key: string]: JSX.Element } = {
+    'weeks': <Weeks />,
+    'suggestions': <Suggestions />,
+    'warns': <Warns />,
+    'answers': <Answers />,
+  }
 
   useEffect(() => {
     const loadWeek = async () => {
-      const { data } = await api.get<TWeek>("/thisweek");
-      setWeek(data?.data);
+      await api.get<TWeek>("/thisweek");
     };
     loadWeek();
   }, []);
 
   const renderWeek = useCallback(() => {
-    if (week?.length) {
-      return week?.map((item, index) => <Week item={item} index={index} />);
-    } else {
-      return (
-        <EmptyContainer>
-          <EmptyText>semana não encontrada</EmptyText>
-        </EmptyContainer>
-      );
-    }
-  }, [week]);
+    // if (week?.length) {
+    //   return week?.map((item, index) => <Week item={item} index={index} />);
+    // } else {
+    return pages[selectedPage];
+    // }
+  }, [selectedPage, pages]);
 
   return (
     <Container>

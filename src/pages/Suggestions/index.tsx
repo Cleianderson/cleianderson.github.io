@@ -1,11 +1,11 @@
-import React, { useEffect, useState, useContext } from "react";
-import SubHeader from "../../components/SubHeader";
+import React, { useEffect, useState } from "react";
 
 import { Container, Content, ContainerInputs, Label } from "./styles";
 import Suggestion from "./components/Suggestion";
 
 import api from "../../service/api";
-import ContextApp from "../../contexts/ContextApp";
+import { useSelector } from "react-redux";
+import { useAlert } from "react-alert";
 
 function Suggestions() {
   const [suggestions, setSuggestions] = useState<SuggestionSchema[]>();
@@ -15,7 +15,8 @@ function Suggestions() {
     others: boolean;
   }>({ ru: false, app: false, others: true });
 
-  const { pass } = useContext(ContextApp);
+  const pass = useSelector<MainRootState, string | undefined>(state => state.mainState.userPassword)
+  const alert = useAlert()
 
   const handleClickType = (
     event: React.MouseEvent<HTMLLabelElement, MouseEvent>
@@ -39,10 +40,12 @@ function Suggestions() {
       params: { pass, id },
       validateStatus: () => true,
     });
-    if (res.status === 200) {
+    if (res.status.toString().startsWith('2')) {
       const _suggestions = suggestions?.filter((item) => item._id !== id);
       setSuggestions(_suggestions);
-    } else if (res.status === 400) alert(res.data.error);
+    } else if (res.status.toString().startsWith('4')) {
+      alert.error(res.data.error);
+    }
   };
 
   const handleMark = async (id: string) => {
@@ -53,7 +56,7 @@ function Suggestions() {
         validateStatus: () => true,
       }
     );
-    if (res.status === 200) {
+    if (res.status.toString().startsWith('2')) {
       const _suggestions = suggestions?.map((item) => {
         if (item._id === id) {
           item.viewed = !item.viewed;
@@ -61,20 +64,52 @@ function Suggestions() {
         return item;
       });
       setSuggestions(_suggestions);
+    } else if (res.status.toString().startsWith('4')) {
+      alert.error(res.data.error);
     }
   };
 
   useEffect(() => {
     const loadSuggestions = async () => {
       const { data } = await api.get("/suggestions");
-      setSuggestions(data);
+      setSuggestions(sortSuggestions(data));
     };
     loadSuggestions();
+
   }, []);
+
+  const sortSuggestions = (data: SuggestionSchema[] | undefined) => {
+    const _sugg = data?.sort((a, b) => {
+      if (a.viewed !== b.viewed) {
+        return a.viewed ? -1 : 1
+      } else {
+        const num1 = new Date(a.createdAt).valueOf()
+        const num2 = new Date(b.createdAt).valueOf()
+
+        if (isNaN(num1)) {
+          return isNaN(num2) ? 0 : 1
+        }
+        if (isNaN(num2)) {
+          return isNaN(num1) ? 0 : -1
+        }
+
+        return Math.sign(num2 - num1) * 1
+      }
+    })
+
+    return _sugg
+  }
+
+  useEffect(() => {
+    const _sugg = sortSuggestions(suggestions)
+
+    if (JSON.stringify(_sugg) !== JSON.stringify(suggestions)) {
+      setSuggestions(_sugg)
+    }
+  }, [suggestions, typesShow])
 
   return (
     <Container>
-      <SubHeader />
       <ContainerInputs>
         <Label id="others" show={typesShow?.others} onClick={handleClickType}>
           Outros
@@ -86,7 +121,7 @@ function Suggestions() {
           App
         </Label>
       </ContainerInputs>
-      <Content>
+      <Content columnWidth='30%' duration={0}>
         {suggestions?.map(
           (suggestion, index) =>
             Object.getOwnPropertyDescriptor(typesShow, suggestion.type)

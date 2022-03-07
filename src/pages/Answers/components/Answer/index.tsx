@@ -1,5 +1,7 @@
-import React, { useEffect, useRef, useState, useContext } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { MdSave, MdDeleteForever } from "react-icons/md";
+import { useSelector } from "react-redux";
+import { useAlert } from "react-alert";
 
 import {
   Container,
@@ -16,7 +18,6 @@ import {
 } from "./styles";
 
 import api from "../../../../service/api";
-import ContextApp from "../../../../contexts/ContextApp";
 
 const Answer: React.FC<{ item: TAnswers }> = ({ item }) => {
   const [answer, setAnswer] = useState(item.answer);
@@ -28,7 +29,8 @@ const Answer: React.FC<{ item: TAnswers }> = ({ item }) => {
   const questionTextArea = useRef<HTMLTextAreaElement>(null);
   const firstRun = useRef(true);
 
-  const { pass } = useContext(ContextApp);
+  const pass = useSelector<MainRootState, string | undefined>(state => state.mainState.userPassword);
+  const alert = useAlert()
 
   const handleUpdateAnswer = async () => {
     const res = await api.put(
@@ -43,8 +45,10 @@ const Answer: React.FC<{ item: TAnswers }> = ({ item }) => {
       },
       { validateStatus: () => true }
     );
-    if (res.status === 200) {
+    if (res.status.toString().startsWith('2')) {
       setEdited(false);
+    } else if (res.status.toString().startsWith('4')) {
+      alert.error(res.data.error)
     }
   };
 
@@ -54,14 +58,17 @@ const Answer: React.FC<{ item: TAnswers }> = ({ item }) => {
         id: item._id,
         pass,
       },
+      validateStatus: () => true
     });
 
-    if (res.status === 200) {
+    if (res.status.toString().startsWith('2')) {
       setRelevation("<deleted>");
       setAuthor("<deleted>");
       setQuestion("<deleted>");
       setAnswer("<deleted>");
       setEdited(false);
+    } else if (res.status.toString().startsWith('4')) {
+      alert.error(res.data.error)
     }
   };
 

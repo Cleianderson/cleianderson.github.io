@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import moment from "moment";
 
 import {
@@ -13,7 +13,8 @@ import {
 } from "./styles";
 
 import api from "../../../../service/api";
-import ContextApp from "../../../../contexts/ContextApp";
+import { useSelector } from "react-redux";
+import { useAlert } from "react-alert";
 
 function CreateWarn({ close }: { close: () => void }) {
   const [title, setTitle] = useState("");
@@ -21,7 +22,8 @@ function CreateWarn({ close }: { close: () => void }) {
   const [_date, setDate] = useState("");
   const [error, setError] = useState("");
 
-  const { pass } = useContext(ContextApp);
+  const userPassword = useSelector<MainRootState>(state => state.mainState.userPassword)
+  const alert = useAlert()
 
   const handleSubmit = async () => {
     if (title.trim().length === 0) return setError("Insira um título");
@@ -31,15 +33,20 @@ function CreateWarn({ close }: { close: () => void }) {
 
     const res = await api.post(
       "/warn",
-      { title, content, endDate: moment(_date).toISOString(), pass },
-      { validateStatus: () => false }
+      { title, content, endDate: moment(_date).toISOString(), pass: userPassword },
+      { validateStatus: () => true }
     );
-    if (res.status === 200) {
+
+    const statusSucessCreated = res.status.toString().startsWith('2')
+
+    if (statusSucessCreated) {
       setTitle("");
       setContent("");
       setDate("");
+      alert.success('Aviso enviado')
+    } else {
+      alert.error(res.data.error);
     }
-    alert(res.status === 200 ? "Aviso enviado" : res.data.error);
   };
 
   useEffect(() => {

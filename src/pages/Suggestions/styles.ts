@@ -1,18 +1,20 @@
 import styled from "styled-components";
+import StackGrid from 'react-stack-grid'
 
 export const Container = styled.div`
   height: 100vh;
+  padding: 10px;
 `;
 
-export const Content = styled.div`
-  display: grid;
+export const Content = styled(StackGrid)`
+  /* display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   grid-gap: 15px;
   padding: 0px 10px;
   padding-top: 10px;
   margin-bottom: 10px;
   height: calc(100vh - 70px);
-  overflow: auto;
+  overflow: auto; */
 `
 
 export const Label = styled.label<{show: boolean}>`

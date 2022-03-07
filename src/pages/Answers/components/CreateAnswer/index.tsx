@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 
 import {
   Container,
@@ -13,7 +14,6 @@ import {
 } from "./styles";
 
 import api from "../../../../service/api";
-import ContextApp from "../../../../contexts/ContextApp";
 
 function CreateWarn({ close }: { close: () => void }) {
   const [question, setQuestion] = useState("");
@@ -23,7 +23,7 @@ function CreateWarn({ close }: { close: () => void }) {
   const [relevation, setRelevation] = useState("0");
   const [error, setError] = useState("");
 
-  const { pass } = useContext(ContextApp);
+  const pass = useSelector<MainRootState, string | undefined>(state => state.mainState.userPassword);
 
   const handleSubmit = async () => {
     if (question.trim().length === 0) return setError("Insira uma pergunta");
@@ -47,7 +47,7 @@ function CreateWarn({ close }: { close: () => void }) {
   useEffect(() => {
     if (error.trim().length === 0) return;
     setError("");
-  }, [question, answer, author]);
+  }, [question, answer, author, error]);
 
   return (
     <Container>

@@ -5,6 +5,8 @@ export const Container = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  border: 1px solid #666;
+  border-radius: 0 10px 10px 10px;
 `
 
 export const Table = styled.table`
@@ -18,7 +20,7 @@ export const Tr = styled.tr`
   border-top: 1px;
   font-size: 12px;
   text-align: center;
-  height: 40px;
+  min-height: 40px;
   * {
     padding: 5px;
   }
@@ -27,7 +29,9 @@ export const Tr = styled.tr`
   }
 `;
 export const Td = styled.td``;
-export const Th = styled.th``;
+export const Th = styled.th`
+  min-width: 100px;
+`;
 export const Close = styled.button`
   position: absolute;
   top: 0;

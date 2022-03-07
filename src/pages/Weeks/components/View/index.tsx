@@ -1,38 +1,38 @@
-import React from "react";
+import React, { useState } from "react";
 
 import {
   Container,
   Content,
   Close,
+  Header,
+  Button
 } from "./styles";
 
 import Table from '../../../../components/Table'
-
-const KEYS_VALUES: { [key: string]: string } = {
-  p1: "Prato Prin. 1",
-  p2: "Prato Prin. 2",
-  gua: "Guarnição",
-  fag: "Fast Grill",
-  gre: "Na Grelha",
-  veg: "Vegetariano",
-  sob: "Sobremesa",
-  sal: "Sal. Crua",
-  sco: "Sal. Cozida",
-  sopa: "Sopa",
-  suc: "Suco",
-};
 
 const View: React.FC<{ week: TWeek; onClose: () => void }> = ({
   onClose,
   week,
 }) => {
+  const [isLaunch, setIsLaunch] = useState(true)
+
   return (
     <Container>
       <Content>
-        <Table type="almoco" week={week.data} label="Almoço" />
-        <Table type="jantar" week={week.data} label="Jantar" />
+        <Header>
+          <Button selected={isLaunch} onClick={() => setIsLaunch(true)}>
+            Almoço
+          </Button>
+          <Button selected={!isLaunch} onClick={() => setIsLaunch(false)}>
+            Jantar
+          </Button>
+        </Header>
+        <Table
+          type={isLaunch ? "almoco" : 'jantar'}
+          week={week.data} label={isLaunch ? "Almoço" : 'Jantar'}
+        />
       </Content>
-      <Close onClick={onClose}>fechar</Close>
+      <Close onClick={onClose}>X fechar</Close>
     </Container>
   );
 };

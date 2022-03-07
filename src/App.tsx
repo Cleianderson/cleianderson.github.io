@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import smalltalk from "smalltalk";
 
 import HomeRoutes from "./routes/Home";
@@ -21,7 +21,7 @@ function App() {
       setUserPassword(inputUser);
     };
     showInputPassword();
-  }, []);
+  });
 
   return (
     <div className="App">

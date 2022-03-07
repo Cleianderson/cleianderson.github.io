@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { MdAdd } from "react-icons/md";
 
-import SubHeader from "../../components/SubHeader";
 import api from "../../service/api";
 
 import {
@@ -31,8 +30,8 @@ function Answers() {
   const renderContent = useCallback(() => {
     if (answers.length) {
       return answers.map((item, index) => (
-        <AnswerContainer>
-          <Answer key={String(item._id + index)} item={item} />
+        <AnswerContainer key={String(item._id + index)}>
+          <Answer item={item} />
         </AnswerContainer>
       ));
     } else {
@@ -46,8 +45,7 @@ function Answers() {
 
   return (
     <Container>
-      <SubHeader />
-      <Content>{renderContent()}</Content>
+      <Content columnWidth='50%' duration={0}>{renderContent()}</Content>
       <AnswerButton onClick={() => setModalVisible(true)}>
         <MdAdd size={25} color="#fff" />
         criar resposta

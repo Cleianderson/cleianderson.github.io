@@ -1,23 +1,27 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 
 import { Container, Button } from "./styles";
 
+
 function Sidebar() {
+  const dispatch = useDispatch()
+  const selectedPage = useSelector<MainRootState, string>(state => state.mainState.selectedPage)
+
+  const setPage = (page: string) => dispatch({ type: 'SET_PAGE', payload: { selectedPage: page } })
+
+  const pages = ['weeks', 'warns', 'suggestions', 'answers']
+  const titlePages: { [key: string]: string } = {
+    'weeks': 'Semanas', 'warns': 'Avisos', 'suggestions': 'Sugestões', 'answers': 'Mural'
+  }
+
   return (
     <Container>
-      <Link to="/weeks">
-        <Button>Semanas</Button>
-      </Link>
-      <Link to="/warns">
-        <Button>Avisos</Button>
-      </Link>
-      <Link to="/suggestions">
-        <Button>Sugestões</Button>
-      </Link>
-      <Link to="/answers">
-        <Button>Respostas</Button>
-      </Link>
+      {pages.map((strPage) => (
+        <Button key={strPage} isSelected={strPage === selectedPage} onClick={() => setPage(strPage)} >
+          {titlePages[strPage]}
+        </Button>
+      ))}
     </Container>
   );
 }

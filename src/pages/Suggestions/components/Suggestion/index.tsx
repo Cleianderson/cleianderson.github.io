@@ -9,7 +9,6 @@ import {
   Info,
   Author,
   Header,
-  Type,
   Title,
   TDate,
   Button,

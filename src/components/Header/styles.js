@@ -16,3 +16,8 @@ export const Image = styled.img`
   width: 40px;
   height: 40px;
 `
+
+export const DateText = styled.span`
+  color: #666;
+  margin-left: 20px;
+`

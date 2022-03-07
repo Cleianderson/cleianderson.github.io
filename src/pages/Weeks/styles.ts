@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export const Container = styled.div`
   height: calc(100vh - 50px);
-  position: relative;
+  /* position: relative; */
 `;
 
 export const Content = styled.div`
@@ -42,6 +42,7 @@ export const Modal = styled.div<{ visible: boolean }>`
   height: 100vh;
   background: #ccccccaa;
   top: 0;
+  max-width: calc(100vw - 200px);
 `;
 
 export const BtnInsert = styled.button`

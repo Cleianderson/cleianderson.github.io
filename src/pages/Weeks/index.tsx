@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { MdAdd } from "react-icons/md";
 
 import { Container, Content, Week, Modal, BtnInsert } from "./styles";
-import SubHeader from "components/SubHeader";
 
 import api from "../../service/api";
 import Insert from "./components/Insert";
@@ -23,7 +22,6 @@ const Weeks: React.FC = () => {
 
   return (
     <Container>
-      <SubHeader />
       <Content>
         {weeks?.map((w) => (
           <Week key={w.number_week} onClick={() => setViewWeek(w)}>{w.year}, semana {w.number_week}</Week>

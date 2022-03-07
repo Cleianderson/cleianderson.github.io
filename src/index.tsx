@@ -1,6 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
+import { Provider as AlertProvider } from 'react-alert';
+import AlertTemplate from 'react-alert-template-basic';
 import App from './App';
 // import * as serviceWorker from './serviceWorker';
 
@@ -8,9 +10,11 @@ import { Store } from './store'
 
 ReactDOM.render(
   <React.StrictMode>
-    <Provider store={Store}>
-      <App />
-    </Provider>
+    <AlertProvider template={AlertTemplate} timeout={3000} offset='10px'>
+      <Provider store={Store}>
+        <App />
+      </Provider>
+    </AlertProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );

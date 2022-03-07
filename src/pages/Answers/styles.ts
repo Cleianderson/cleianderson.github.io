@@ -1,15 +1,17 @@
 import styled from "styled-components";
+import StackGrid from "react-stack-grid";
 
 export const Container = styled.div`
   height: 100vh;
 `;
-export const Content = styled.div`
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  overflow: auto;
-  height: calc(100vh - 50px);
-  width: 100%;
+export const Content = styled(StackGrid)`
+  // display: grid;
+  // grid-template-columns: auto auto;
+  // align-items: center;
+  // flex-direction: column;
+  // overflow: auto;
+  // height: calc(100vh - 50px);
+  // width: 100%;
 `;
 export const WarnContainer = styled.div`
   margin: 10px;
@@ -70,6 +72,7 @@ export const Modal = styled.div<{ visible: boolean }>`
   height: 100vh;
   background: #ccccccaa;
   top: 0;
+  max-width: calc(100vw - 200px);
 `;
 
 export const EmptyContainer = styled.div`
@@ -80,8 +83,8 @@ export const EmptyContainer = styled.div`
 `;
 
 export const AnswerContainer = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  /* display: grid;
+  grid-template-columns: 1fr 1fr 1fr; */
 `
 
 export const EmptyText = styled.span``;

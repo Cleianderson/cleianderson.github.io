@@ -46,6 +46,7 @@ export const Answer = styled.textarea`
   border: 1px solid #ccc;
   border-radius: 10px;
   line-height: 1.7;
+  max-height: calc(100vh - 400px)
 `;
 
 export const Author = styled(Question)``;
