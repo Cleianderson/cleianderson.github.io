@@ -9,6 +9,7 @@ import { useAlert } from "react-alert";
 
 function Suggestions() {
   const [suggestions, setSuggestions] = useState<SuggestionSchema[]>();
+  const [onlyMarkeds, setOnlyMarkeds] = useState(false);
   const [typesShow, setTypesShow] = useState<{
     ru: boolean;
     app: boolean;
@@ -100,13 +101,10 @@ function Suggestions() {
     return _sugg
   }
 
-  useEffect(() => {
-    const _sugg = sortSuggestions(suggestions)
-
-    if (JSON.stringify(_sugg) !== JSON.stringify(suggestions)) {
-      setSuggestions(_sugg)
-    }
-  }, [suggestions, typesShow])
+  const handleOnlyShowMarked = (event: any) => {
+    const val = event.target.checked ? true : false
+    setOnlyMarkeds(val)
+  }
 
   return (
     <Container>
@@ -121,11 +119,15 @@ function Suggestions() {
           App
         </Label>
       </ContainerInputs>
+      <div style={{ margin: 10, marginBottom: 20 }} >
+        <input id="onlyShowMarked" name="onlyShowMarked" type="checkbox" checked={onlyMarkeds} onChange={handleOnlyShowMarked} />
+        <label htmlFor="onlyShowMarked">Mostrar apenas sugestções salvas</label>
+      </div>
       <Content columnWidth='30%' duration={0}>
-        {suggestions?.map(
+        {sortSuggestions(suggestions)?.map(
           (suggestion, index) =>
             Object.getOwnPropertyDescriptor(typesShow, suggestion.type)
-              ?.value && (
+              ?.value && suggestion.viewed === onlyMarkeds && (
               <Suggestion
                 key={String(index + suggestion._id)}
                 item={suggestion}
